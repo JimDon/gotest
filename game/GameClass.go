@@ -2,10 +2,10 @@ package game
 import (
 )
 type GameClass struct {
-	Board [][]int
+	Board [][]string
 	Sentinel []int
 }
-var states []GameClass
+var states [][][]string
 
 func (g *GameClass) Display(){
 	for i,_ := range g.Board {
@@ -13,10 +13,11 @@ func (g *GameClass) Display(){
 	}
 }
 
-
-
-func (g *GameClass)NewState(){
+func (g *GameClass) NewBoardState(coor coordinate,mark string) [][]string{
+	newBoard := g.Board
+	newBoard[coor.x][coor.y] = mark
+	append(states,newBoard)
+}
 	
 
 
-}

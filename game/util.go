@@ -10,3 +10,4 @@ type coordinate struct {
 	x int
 	y int
 }
+func getNextStep

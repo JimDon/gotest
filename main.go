@@ -1,23 +1,21 @@
 package main
 import (
-	"fmt"
 	game "github.com/JimDon/gotest/game"
 )
 
 func main() {
-	fmt.Println("hello,world")
 	row := 6
 	col := 7
 	// newGame :=&game.GameClass{
 	// 	Board: newBoard,
 	// 	Sentinel: newSentinel,
 	// }
-	newBoard := make([][]int, row)
+	newBoard := make([][]string, row)
     for i := 0; i < row; i++ {
         innerLen := col
         newBoard[i] = make([]int, innerLen)
         for j := 0; j < innerLen; j++ {
-            newBoard[i][j] = 0
+            newBoard[i][j] = '0'
         }
 	}
 	sentinel := make ([]int,col)
