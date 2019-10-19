@@ -6,3 +6,7 @@ func displayline(row []int){
 	}
 	fmt.Println()
 }
+type coordinate struct {
+	x int
+	y int
+}
