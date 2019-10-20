@@ -5,14 +5,18 @@ import (
 )
 
 func main() {
-	
+	//Task1 execution
 	Task1()
+
+	//Task2 execution
 	Task2()
+
+	//Task3 execution
 	Task3()
 	
 }
 
-
+//initialize the board
 func makeBoard(row int,col int) [][]int{
 	newBoard := make([][]int, row)
     for i := 0; i < row; i++ {
@@ -24,6 +28,7 @@ func makeBoard(row int,col int) [][]int{
 	return newBoard
 }
 
+//initialize the sentinel
 func makeSentinel(row int, col int) []int{
 	sentinel := make ([]int,col)
 	for k :=0; k<col; k++{

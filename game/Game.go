@@ -3,9 +3,14 @@ import (
 	"fmt"
 	"errors"
 )
+// board 
 type board [][]int
+// board slice for the board play log
 type boardStates []board
+
+// for the check the finished status
 type sentinel []int
+
 const UnavailableSlot = -1
 const defaultSymbol = "."
 type Player struct{
@@ -27,7 +32,7 @@ type Game struct {
 	
 }
 
-
+//display the board
 func (g *Game) Display(p1 Player,p2 Player){
 	for i :=0; i<g.Rows; i++ {
 		fmt.Println()
@@ -46,6 +51,8 @@ func (g *Game) Display(p1 Player,p2 Player){
 	}
 	fmt.Println()
 }
+
+//display the initial board
 func (g *Game) Print(){
 	
 	for i :=0; i<g.Rows; i++ {
@@ -59,11 +66,13 @@ func (g *Game) Print(){
 }
 	
 
-
+//set the board states,save the old one into the log
 func (g *Game) SetBoardStates(newBoard board) {
 	g.BoardStates =append(g.BoardStates,newBoard)
 	g.Board = newBoard
 }
+
+//get the new board
 func (g *Game) GetNewBoard(coord coordinate,p Player) board{
 	if coord.x == UnavailableSlot {
 		return g.Board
@@ -78,6 +87,7 @@ func (g *Game)	SetSentinel(col int,slot int){
 
 }
 
+//check the board finish status
 func (g *Game)	CheckforFinished() bool{
 	senLength := len(g.Sentinel)
 	for i :=0; i<senLength; i++ {
@@ -89,7 +99,11 @@ func (g *Game)	CheckforFinished() bool{
 
 }
 
+//check the four connected 
 func (g *Game) CheckforFourConnected(coord coordinate) bool{
+		if coord.x == UnavailableSlot {
+			return false
+		}
 		r := coord.x
 		c := coord.y
 	    t := g.Board[r][c]
@@ -97,18 +111,18 @@ func (g *Game) CheckforFourConnected(coord coordinate) bool{
 		countVertical := 0
 		countLeftD := 0
 		countRightD := 0
-		length := len(g.Board)
 		for i:=1;i<4;i++ {
-			if(c-i>=0 && g.Board[r][c-i]==t||(c+i<length && g.Board[r][c+i]==t)){
+			
+			if(c-i>=0 && g.Board[r][c-i]==t||(c+i<g.Cols && g.Board[r][c+i]==t)){
 				countHorizon += 1;
 			}
-			if(r-i>=0 && g.Board[r-i][c]==t)||(r+i<length && g.Board[r+i][c]==t){
+			if(r-i>=0 && g.Board[r-i][c]==t)||(r+i<g.Rows && g.Board[r+i][c]==t){
 				countVertical += 1;
 			}
-			if(r-i>=0 && c-i>=0 && g.Board[r-i][c-i]==t)||(r+i<length && c+i<length && g.Board[r+i][c+i]==t){
+			if(r-i>=0 && c-i>=0 && g.Board[r-i][c-i]==t)||(r+i<g.Rows && c+i<g.Cols && g.Board[r+i][c+i]==t){
 				countLeftD += 1;
 			}
-			if(r-i>=0 && c+i<length && g.Board[r-i][c+i]==t)||(r+i<length && c-i>=0 && g.Board[r+i][c-i]==t){
+			if(r-i>=0 && c+i<g.Cols && g.Board[r-i][c+i]==t)||(r+i<g.Rows && c-i>=0 && g.Board[r+i][c-i]==t){
 				countRightD += 1;
 			}
 		}
@@ -119,6 +133,8 @@ func (g *Game) CheckforFourConnected(coord coordinate) bool{
 
 }
 
+
+// player next step
 func (g *Game)NextStep()(coordinate,error) {
 	y := getRandomCol(g.Cols)
 	
@@ -133,6 +149,7 @@ func (g *Game)NextStep()(coordinate,error) {
 	}, err
 }
 
+//play the game
 func (g *Game) Play(p Player)(bool,Player,coordinate){
 	coord,err := g.NextStep()
 	if err != nil {
@@ -149,7 +166,7 @@ func (g *Game) Play(p Player)(bool,Player,coordinate){
 }
 
 
-
+// play and fill in the board
 func (g *Game) PlayforFinished(p1 Player,p2 Player) (bool,Player){
 	finished := false
 	for !finished {
@@ -166,6 +183,8 @@ func (g *Game) PlayforFinished(p1 Player,p2 Player) (bool,Player){
 	} 
 	return false, p1
 }
+
+//play for the four connected 
 func (g *Game) PlayforFourConnected(p1 Player,p2 Player) (bool,Player,error){
 	finished := false
 	for !finished {
