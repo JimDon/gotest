@@ -1,13 +1,22 @@
 package game
-import "fmt"
+import (
+	"fmt"
+	"math/rand"
+)
 func displayline(row []int){
 	for _,value := range row{
 		fmt.Print(value)
 	}
 	fmt.Println()
 }
-type coordinate struct {
-	x int
-	y int
+
+
+func getRandomCol(colWidth int) int{
+	return rand.Intn(colWidth)
 }
-func getNextStep
+
+func getLastSlotRow(col int,se sentinel) int {
+	return se[col]
+
+}
+ 

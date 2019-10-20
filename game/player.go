@@ -1,8 +1,7 @@
 package game
 type player struct{
-	name string
-	chessIcon string
-	winner bool
+	id int
+	Symbol string
 }
 func (p *player)NextStep() coordinate{
 	return coordinate{2,3}

@@ -4,30 +4,41 @@ import (
 )
 
 func main() {
-	row := 6
-	col := 7
-	// newGame :=&game.GameClass{
-	// 	Board: newBoard,
-	// 	Sentinel: newSentinel,
-	// }
-	newBoard := make([][]string, row)
-    for i := 0; i < row; i++ {
-        innerLen := col
-        newBoard[i] = make([]int, innerLen)
-        for j := 0; j < innerLen; j++ {
-            newBoard[i][j] = '0'
-        }
-	}
-	sentinel := make ([]int,col)
-	for k :=0; k<col; k++{
-		sentinel[k] = 0
-	}
+	newBoard := makeBoard(6,7)
+	sentinel := makeSentinel(7)
 	newGame := &game.GameClass{
 		Board: newBoard,
 		Sentinel: sentinel,
 	}
 	newGame.Display()
-	
+	p1 := &player{
+		id:1,
+		Symbol: "X",
+	}
+	p2 := &player{
+		id:2,
+		Symbol: "O",
+	}
+	newGame.PlayforFirstFinish(p1,p2)
+
 }
 
+func makeBoard(row int,col int) [][]int{
+	newBoard := make([][]int, row)
+    for i := 0; i < row; i++ {
+        newBoard[i] = make([]int, col)
+        for j := 0; j < col; j++ {
+            newBoard[i][j] = 0
+        }
+	}
+	return newBoard
+}
+
+func makeSentinel(row int, col int) []int{
+	sentinel := make ([]int,col)
+	for k :=0; k<col; k++{
+		sentinel[k] = row -1
+	}
+	return sentinel
+}
 
