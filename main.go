@@ -122,6 +122,6 @@ func Task3(){
 	if finished {
 		newGame.Display(p1,p2)
 	}
-	fmt.Println("winner is",p.Id)
+	fmt.Println("winner is Player",p.Id)
 
 }
