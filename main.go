@@ -5,21 +5,27 @@ import (
 
 func main() {
 	newBoard := makeBoard(6,7)
-	sentinel := makeSentinel(7)
-	newGame := &game.GameClass{
+	sentinel := makeSentinel(6,7)
+	newGame := &game.Game{
+		Rows: 6,
+		Cols: 7,
 		Board: newBoard,
 		Sentinel: sentinel,
 	}
-	newGame.Display()
-	p1 := &player{
-		id:1,
+	newGame.InitDisplay()
+	p1 := game.Player{
+		Id:1,
 		Symbol: "X",
 	}
-	p2 := &player{
-		id:2,
+	p2 := game.Player{
+		Id:2,
 		Symbol: "O",
 	}
-	newGame.PlayforFirstFinish(p1,p2)
+	
+	finished,_ := newGame.PlayforFinished(p1,p2)
+	if finished {
+		newGame.Display(p1,p2)
+	}
 
 }
 

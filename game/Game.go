@@ -1,14 +1,27 @@
 package game
-
+import (
+	"fmt"
+	"errors"
+	log "github.com/sirupsen/logrus"
+)
 type board [][]int
-type boardStates [][][]int
+type boardStates []board
 type sentinel []int
+const UnavailableSlot = -1
+const defaultSymbol = "."
+type Player struct{
+	Id int
+	Symbol string
+}
+
 type coordinate struct {
 	x int
 	y int
 }
 
 type Game struct {
+	Rows int
+	Cols int
 	Board board
 	BoardStates boardStates
 	Sentinel sentinel
@@ -16,30 +29,57 @@ type Game struct {
 }
 
 
-func (g *Game) Display(){
-	for i,_ := range g.Board {
-		displayline(g.Board[i])
+func (g *Game) Display(p1 Player,p2 Player){
+	for i :=0; i<g.Rows; i++ {
+		for j:=0; j<g.Cols; j++{
+			switch g.Board[i][j] {
+			case p1.Id:
+				fmt.Print(p1.Symbol)
+			case p2.Id:
+				fmt.Print(p2.Symbol)
+			default:
+				fmt.Print(defaultSymbol)
+			}	
+		
+		}
+			 	 
 	}
+	
 }
+func (g *Game) InitDisplay(){
+	for i :=0; i<g.Rows; i++ {
+		for j:=0; j<g.Cols; j++{
+				fmt.Print(defaultSymbol)
+			}	
+		
+		}
+			 	 
+}
+	
 
-func (g *Game) SetBoardStates(newBoard board) boardStates{
-	newstates :=append(g.BoardStates,newBoard)
-	return newstates
+
+func (g *Game) SetBoardStates(newBoard board) {
+	g.BoardStates =append(g.BoardStates,newBoard)
+	g.Board = newBoard
 }
-func (g *Game) GetNewBoard(coord coordinate,player player) board{
+func (g *Game) GetNewBoard(coord coordinate,p Player) board{
+	if coord.x == UnavailableSlot {
+		return g.Board
+	}
 	newBoard := g.Board
-	newBoard[coord.x][coord.y]= player.id
+
+	newBoard[coord.x][coord.y]= p.Id
 	return newBoard
 }
-func (g *Game)	SetSentinel(col int,slot int,se sentinel){
+func (g *Game)	SetSentinel(col int,slot int){
 	g.Sentinel[col] = slot
 
 }
 
-func (g *Game)	CheckforFirstFinished() bool{
+func (g *Game)	CheckforFinished() bool{
 	senLength := len(g.Sentinel)
 	for i :=0; i<senLength; i++ {
-		if g.Sentinel[i] != -1 {
+		if g.Sentinel[i] != UnavailableSlot {
 			return false
 		}
 	}
@@ -48,16 +88,64 @@ func (g *Game)	CheckforFirstFinished() bool{
 }
 
 func (g *Game) CheckforFourConnected() bool{
-	newBoard :=
+	// newBoard := g.BoardStates[len(g.BoardStates)-1]
+	// rows := len(newBoard)-1
+	// cols := len(newBoard[0])-1
+	
+	return false
+
 }
 
+func (g *Game)NextStep()(coordinate,error) {
+	y := getRandomCol(g.Cols)
+	
+	x := getLastSlotRow(y,g.Sentinel)
+	var err error
+	if x == UnavailableSlot {
+		err = errors.New("no slot to apply")
+	}
+	return coordinate{
+		x: x,
+		y: y,
+	}, err
+}
 
-
-
-func (g *Game) PlayforFirstFinished(p1 player,p2 player){
+func (g *Game) Play(p Player)(bool,Player){
+	coord,err := g.NextStep()
+	log.Info("coord",coord)
+	if err != nil {
+		log.Info(err)
+		return false,p
+	}
+	newBoard :=g.GetNewBoard(coord,p)
+	log.Info("newboard:",newBoard)
+	g.SetBoardStates(newBoard)
+	log.Info("boardstates",g.BoardStates)
+	g.SetSentinel(coord.y,coord.x-1)
+	log.Info("sentinel",g.Sentinel)
+	if g.CheckforFinished() {
+		return true,p
+	}
+	return false,p
 	
 }
-func (g *Game) PlayforFourConnected(p1 player,p2 player){
+func (g *Game) PlayforFinished(p1 Player,p2 Player) (bool,Player){
+	finished := g.CheckforFinished()
+	for !finished {
+		finished, p := g.Play(p1)
+		if finished {
+			return finished, p
+		}
+		finished, p = g.Play(p2)
+		if finished {
+			return finished, p
+		}
+		
+
+	} 
+	return false, p1
+}
+func (g *Game) PlayforFourConnected(p1 Player,p2 Player){
 
 
 }

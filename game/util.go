@@ -3,16 +3,12 @@ import (
 	"fmt"
 	"math/rand"
 )
-func displayline(row []int){
-	for _,value := range row{
-		fmt.Print(value)
-	}
-	fmt.Println()
-}
 
 
-func getRandomCol(colWidth int) int{
-	return rand.Intn(colWidth)
+
+func getRandomCol(cols int) int{
+	fmt.Println("cols:",cols)
+	return rand.Intn(cols)
 }
 
 func getLastSlotRow(col int,se sentinel) int {
