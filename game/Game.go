@@ -89,12 +89,33 @@ func (g *Game)	CheckforFinished() bool{
 
 }
 
-func (g *Game) CheckforFourConnected() bool{
-	// newBoard := g.BoardStates[len(g.BoardStates)-1]
-	// rows := len(newBoard)-1
-	// cols := len(newBoard[0])-1
-	
-	return false
+func (g *Game) CheckforFourConnected(coord coordinate) bool{
+		r := coord.x
+		c := coord.y
+	    t := g.Board[r][c]
+		countHorizon := 0
+		countVertical := 0
+		countLeftD := 0
+		countRightD := 0
+		length := len(g.Board)
+		for i:=1;i<4;i++ {
+			if(c-i>=0 && g.Board[r][c-i]==t||(c+i<length && g.Board[r][c+i]==t)){
+				countHorizon += 1;
+			}
+			if(r-i>=0 && g.Board[r-i][c]==t)||(r+i<length && g.Board[r+i][c]==t){
+				countVertical += 1;
+			}
+			if(r-i>=0 && c-i>=0 && g.Board[r-i][c-i]==t)||(r+i<length && c+i<length && g.Board[r+i][c+i]==t){
+				countLeftD += 1;
+			}
+			if(r-i>=0 && c+i<length && g.Board[r-i][c+i]==t)||(r+i<length && c-i>=0 && g.Board[r+i][c-i]==t){
+				countRightD += 1;
+			}
+		}
+		if(countHorizon==3 || countVertical==3 || countLeftD==3 || countRightD==3){
+			return true;
+		}
+		return false;
 
 }
 
@@ -112,28 +133,31 @@ func (g *Game)NextStep()(coordinate,error) {
 	}, err
 }
 
-func (g *Game) Play(p Player)(bool,Player){
+func (g *Game) Play(p Player)(bool,Player,coordinate){
 	coord,err := g.NextStep()
 	if err != nil {
-		return false,p
+		return false,p,coord
 	}
 	newBoard :=g.GetNewBoard(coord,p)
 	g.SetBoardStates(newBoard)
 	g.SetSentinel(coord.y,coord.x-1)
 	if g.CheckforFinished() {
-		return true,p
+		return true,p,coord
 	}
-	return false,p
+	return false,p,coord
 	
 }
+
+
+
 func (g *Game) PlayforFinished(p1 Player,p2 Player) (bool,Player){
-	finished := g.CheckforFinished()
+	finished := false
 	for !finished {
-		finished, p := g.Play(p1)
+		finished, p,_ := g.Play(p1)
 		if finished {
 			return finished, p
 		}
-		finished, p = g.Play(p2)
+		finished, p,_ = g.Play(p2)
 		if finished {
 			return finished, p
 		}
@@ -142,10 +166,33 @@ func (g *Game) PlayforFinished(p1 Player,p2 Player) (bool,Player){
 	} 
 	return false, p1
 }
-func (g *Game) PlayforFourConnected(p1 Player,p2 Player){
+func (g *Game) PlayforFourConnected(p1 Player,p2 Player) (bool,Player,error){
+	finished := false
+	for !finished {
+
+		finished, p,coord := g.Play(p1)
+		if g.CheckforFourConnected(coord) {
+			return true,p1,nil
+		}
+
+		if finished {
+			return finished, p,errors.New("finished and equal")
+		}
+		finished, p,coord = g.Play(p2)
+		if g.CheckforFourConnected(coord) {
+			return true,p2,nil
+		}
+		if finished {
+			return finished, p,errors.New("finished and equal")
+		}
+		
+
+	} 
+	return false, p1,nil
+
+}	
 
 
-}
 	
 
 

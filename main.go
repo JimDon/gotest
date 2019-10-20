@@ -1,12 +1,15 @@
 package main
 import (
 	game "github.com/JimDon/gotest/game"
+	"fmt"
 )
 
 func main() {
 	
 	Task1()
 	Task2()
+	Task3()
+	
 }
 
 
@@ -82,4 +85,38 @@ func Task2(){
 	if finished {
 		newGame.Display(p1,p2)
 	}
+}
+
+func Task3(){
+	const rows =6
+	const cols =7
+	newBoard := makeBoard(rows,cols)
+	sentinel := makeSentinel(rows,cols)
+	newGame := &game.Game{
+		Rows: rows,
+		Cols: cols,
+		Board: newBoard,
+		Sentinel: sentinel,
+	}
+	newGame.Print()
+	p1 := game.Player{
+		Id:1,
+		Symbol: "X",
+	}
+	p2 := game.Player{
+		Id:2,
+		Symbol: "O",
+	}
+	
+	finished,p,err := newGame.PlayforFourConnected(p1,p2)
+	if err !=nil {
+		fmt.Println("Equal,no one win!")
+		return 
+	}
+	
+	if finished {
+		newGame.Display(p1,p2)
+	}
+	fmt.Println("winner is",p.Id)
+
 }
