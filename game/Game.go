@@ -2,7 +2,6 @@ package game
 import (
 	"fmt"
 	"errors"
-	log "github.com/sirupsen/logrus"
 )
 type board [][]int
 type boardStates []board
@@ -31,6 +30,7 @@ type Game struct {
 
 func (g *Game) Display(p1 Player,p2 Player){
 	for i :=0; i<g.Rows; i++ {
+		fmt.Println()
 		for j:=0; j<g.Cols; j++{
 			switch g.Board[i][j] {
 			case p1.Id:
@@ -44,16 +44,18 @@ func (g *Game) Display(p1 Player,p2 Player){
 		}
 			 	 
 	}
-	
+	fmt.Println()
 }
-func (g *Game) InitDisplay(){
+func (g *Game) Print(){
+	
 	for i :=0; i<g.Rows; i++ {
+		fmt.Println()
 		for j:=0; j<g.Cols; j++{
 				fmt.Print(defaultSymbol)
 			}	
 		
 		}
-			 	 
+	fmt.Println()
 }
 	
 
@@ -112,17 +114,12 @@ func (g *Game)NextStep()(coordinate,error) {
 
 func (g *Game) Play(p Player)(bool,Player){
 	coord,err := g.NextStep()
-	log.Info("coord",coord)
 	if err != nil {
-		log.Info(err)
 		return false,p
 	}
 	newBoard :=g.GetNewBoard(coord,p)
-	log.Info("newboard:",newBoard)
 	g.SetBoardStates(newBoard)
-	log.Info("boardstates",g.BoardStates)
 	g.SetSentinel(coord.y,coord.x-1)
-	log.Info("sentinel",g.Sentinel)
 	if g.CheckforFinished() {
 		return true,p
 	}

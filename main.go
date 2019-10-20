@@ -4,30 +4,11 @@ import (
 )
 
 func main() {
-	newBoard := makeBoard(6,7)
-	sentinel := makeSentinel(6,7)
-	newGame := &game.Game{
-		Rows: 6,
-		Cols: 7,
-		Board: newBoard,
-		Sentinel: sentinel,
-	}
-	newGame.InitDisplay()
-	p1 := game.Player{
-		Id:1,
-		Symbol: "X",
-	}
-	p2 := game.Player{
-		Id:2,
-		Symbol: "O",
-	}
 	
-	finished,_ := newGame.PlayforFinished(p1,p2)
-	if finished {
-		newGame.Display(p1,p2)
-	}
-
+	Task1()
+	Task2()
 }
+
 
 func makeBoard(row int,col int) [][]int{
 	newBoard := make([][]int, row)
@@ -48,3 +29,57 @@ func makeSentinel(row int, col int) []int{
 	return sentinel
 }
 
+func Task1(){
+	const rows =6
+	const cols =7
+	newBoard := makeBoard(rows,cols)
+	sentinel := makeSentinel(rows,cols)
+	newGame := &game.Game{
+		Rows: rows,
+		Cols: cols,
+		Board: newBoard,
+		Sentinel: sentinel,
+	}
+	p1 := game.Player{
+		Id:1,
+		Symbol: "X",
+	}
+	p2 := game.Player{
+		Id:2,
+		Symbol: "O",
+	}
+	newGame.Print()
+	newGame.Board[0][3] =1
+	newGame.Board[3][2] =1
+	newGame.Board[2][3] =2
+	newGame.Board[3][5] =2
+	newGame.Display(p1,p2)
+
+}
+
+func Task2(){
+	const rows =6
+	const cols =7
+	newBoard := makeBoard(rows,cols)
+	sentinel := makeSentinel(rows,cols)
+	newGame := &game.Game{
+		Rows: rows,
+		Cols: cols,
+		Board: newBoard,
+		Sentinel: sentinel,
+	}
+	newGame.Print()
+	p1 := game.Player{
+		Id:1,
+		Symbol: "X",
+	}
+	p2 := game.Player{
+		Id:2,
+		Symbol: "O",
+	}
+	
+	finished,_ := newGame.PlayforFinished(p1,p2)
+	if finished {
+		newGame.Display(p1,p2)
+	}
+}

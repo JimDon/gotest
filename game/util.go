@@ -1,13 +1,13 @@
 package game
 import (
-	"fmt"
 	"math/rand"
+	"time"
 )
 
 
 
 func getRandomCol(cols int) int{
-	fmt.Println("cols:",cols)
+	rand.Seed(time.Now().UTC().UnixNano())
 	return rand.Intn(cols)
 }
 
